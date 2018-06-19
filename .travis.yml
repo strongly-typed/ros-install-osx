@@ -6,5 +6,13 @@ matrix:
       osx_image: xcode9.4
       env: ROS_CONFIGURATION=rviz PATH=/usr/local/bin:/usr/bin:/usr/sbin:/bin
 
+# https://github.com/oclint/homebrew-formulae#travis-ci
+before_install:
+- brew update
+- brew tap homebrew/cask
+- brew cask remove oclint
+- brew install gcc
+- brew cask install oclint
+
 script:
   - ./install

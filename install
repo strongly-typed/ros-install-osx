@@ -26,13 +26,16 @@ ROS_DISTRO=${ROS_DISTRO:-lunar}
 ROS_CONFIGURATION=${ROS_CONFIGURATION:-desktop_full}
 ROS_EXTRA_PACKAGES=${ROS_EXTRA_PACKAGES:-}
 ROS_INSTALL_DIR=${ROS_INSTALL_DIR:-/opt/ros/${ROS_DISTRO}}
+export PYCURL_SSL_LIBRARY=openssl
 
 do_install()
 {
   set -e
+  set -x
 
   # Homebrew
-  if ! hash brew 2>/dev/null; then
+  which brew
+  if ! which brew 2>/dev/null; then
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     echo export PATH='/usr/local/bin:$PATH' >> ~/.bash_profile
     source ~/.bash_profile
@@ -41,11 +44,12 @@ do_install()
   brew update
 
   # XQuartz
-  if ! hash xquartz 2>/dev/null; then
+  # which xquartz
+  if ! which xquartz 2>/dev/null; then
     brew tap homebrew/cask
     brew cask install xquartz
     echo "Log out and in to finalize XQuartz setup."
-    exit 0
+    # exit 0
   fi
 
   # Check for pip packages in the system Python directory.
@@ -137,7 +141,7 @@ do_install()
   pushd src
     # Avoid downloading opencv3; we already installed it from homebrew.
     wstool merge file://$(pwd)/../${WS}.rosinstall
-    wstool remove opencv3
+    wstool remove opencv3 || true
     wstool update -j8
 
     # See: https://github.com/ros/catkin/pull/784
@@ -160,7 +164,7 @@ do_install()
     fi
 
     # Package dependencies.
-    rosdep install --from-paths . --ignore-src --rosdistro ${ROS_DISTRO} -y --as-root pip:no
+    rosdep install --from-paths . --ignore-src --rosdistro ${ROS_DISTRO} --skip-keys gtest --skip-keys google-mock -y --as-root pip:no
   popd
 
   # Clean out or create the install directory.
