@@ -10,7 +10,6 @@ matrix:
 before_install:
 - brew update
 - brew tap homebrew/cask
-- brew cask remove oclint
 - brew install gcc
 - brew cask install oclint
 
