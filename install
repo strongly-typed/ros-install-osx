@@ -180,7 +180,7 @@ do_install()
   catkin config --install \
     --install-space ${ROS_INSTALL_DIR} \
     --cmake-args \
-      -DCATKIN_ENABLE_TESTING=1 \
+      -DCATKIN_ENABLE_TESTING=0 \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_FIND_FRAMEWORK=LAST \
       -DPYTHON_EXECUTABLE=$(which python2) \
